@@ -98,7 +98,12 @@ class _SpinnerScreenState extends State<SpinnerScreen> {
     });
   }
 
-  
+  void shuffleChoices() {
+    setState(() {
+      selections.shuffle();
+    });
+  }
+
  @override
 Widget build(BuildContext context) {
 
@@ -225,10 +230,11 @@ Widget build(BuildContext context) {
                 children: [
                   Expanded(
                     child: CupertinoTextField(
+                      controller: _inputController,
                       placeholder: "Enter a choice...",
                       padding: const EdgeInsets.all(12),
                       decoration: BoxDecoration(
-                        color: Colors.deepPurple.shade700,
+                        color:  const Color.fromARGB(255, 241, 240, 242),
                         borderRadius: BorderRadius.circular(10),
                       ),
                     ),
@@ -236,27 +242,31 @@ Widget build(BuildContext context) {
                   const SizedBox(width: 10),
                   CupertinoButton(
                 color: Colors.deepPurple.shade300,
-                onPressed: () {  },
+                onPressed: addChoice,
                 child: const Text("Add Choice", style: TextStyle(color: Colors.white)),
               ),
                 ],
               ),
               const SizedBox(height: 10),
               CupertinoSlider(
-                value: 1,
+                value: spinDuration.toDouble(),
                 min: 1,
                 max: 10,
                 divisions: 9,
-                activeColor: Colors.deepPurple.shade400, 
-                onChanged: (double value) {  },
+                activeColor: Colors.deepPurple.shade400,
+                onChanged: (value) {
+                  setState(() {
+                    spinDuration = value.toInt();
+                  });
+                },
               ),
-              Text("Spin Duration: ", textAlign: TextAlign.center),
+              Text("Spin Duration: $spinDuration seconds", textAlign: TextAlign.center),
               const SizedBox(height: 10),
               Container(
                 margin: const EdgeInsets.symmetric(vertical: 10),
                 padding: const EdgeInsets.all(10),
                 decoration: BoxDecoration(
-                  color:  Colors.deepPurple.shade200,
+                  color: Colors.white,
                   borderRadius: BorderRadius.circular(12),
                   boxShadow: [
                     BoxShadow(
@@ -274,8 +284,9 @@ Widget build(BuildContext context) {
                         Expanded(
                           child: CupertinoButton(
                             padding: EdgeInsets.zero,
+                            onPressed: () => setState(() => showEntries = true),
+                                                color: showEntries ? Colors.deepPurple.shade700 : Colors.deepPurple.shade300,
                             borderRadius: BorderRadius.circular(10),
-                            onPressed: () {  },
                             child: Padding(
                               padding: const EdgeInsets.symmetric(vertical: 10),
                               child: Row(
@@ -286,20 +297,20 @@ Widget build(BuildContext context) {
                                     style: TextStyle(
                                       fontSize: 18,
                                       fontWeight: FontWeight.bold,
-                                      color: Colors.white, 
+                                      color: showEntries ? Colors.white : Colors.white, 
                                     ),
                                   ),
                                   const SizedBox(width: 5),
                                   Container(
                                     padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
                                     decoration: BoxDecoration(
-                                      color: Colors.deepPurple.shade300, 
+                                      color: showEntries ? Colors.deepPurple.shade300 : Colors.deepPurple.shade700, 
                                       borderRadius: BorderRadius.circular(12),
                                     ),
                                     child: Text(
-                                      "selection number",
+                                      "${selections.length}",
                                       style: TextStyle(
-                                        color:  Colors.white, 
+                                        color: showEntries ? Colors.white : Colors.white, 
                                         fontSize: 14,
                                       ),
                                     ),
@@ -312,9 +323,9 @@ Widget build(BuildContext context) {
                         Expanded(
                             child: CupertinoButton(
                               padding: EdgeInsets.zero,
-                              color: Colors.deepPurple.shade700,
+                              onPressed: () => setState(() => showEntries = false),
+                              color: !showEntries ? Colors.deepPurple.shade700 : Colors.deepPurple.shade300,
                               borderRadius: BorderRadius.circular(10),
-                              onPressed: () {  },
                               child: Padding(
                                 padding: const EdgeInsets.symmetric(vertical: 10),
                                 child: Row(
@@ -325,20 +336,20 @@ Widget build(BuildContext context) {
                                       style: TextStyle(
                                         fontSize: 18,
                                         fontWeight: FontWeight.bold,
-                                        color: Colors.white, 
+                                        color: !showEntries ? Colors.white : Colors.white, 
                                       ),
                                     ),
                                     const SizedBox(width: 5),
                                     Container(
                                       padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
                                       decoration: BoxDecoration(
-                                        color:  Colors.deepPurple.shade700, 
+                                        color: showEntries ? Colors.deepPurple.shade700 : Colors.deepPurple.shade300, 
                                         borderRadius: BorderRadius.circular(12),
                                       ),
                                       child: Text(
-                                        "number",
+                                        "${history.length}",
                                         style: TextStyle(
-                                          color: Colors.white , 
+                                          color: !showEntries ? Colors.white : Colors.white, 
                                           fontSize: 14,
                                         ),
                                       ),
@@ -352,8 +363,56 @@ Widget build(BuildContext context) {
                       ],
                     ),
                     const Divider(),
-                    
-              const SizedBox(height: 30),
+                      if (showEntries)...[
+                      Align(
+                        alignment: Alignment.centerRight,
+                        child: CupertinoButton(
+                          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                          onPressed: shuffleChoices,
+                          child: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: const [
+                              Icon(CupertinoIcons.shuffle, size: 18, color: Colors.deepPurple),
+                              SizedBox(width: 5),
+                              Text("Shuffle", style: TextStyle(color: Colors.deepPurple)),
+                            ],
+                          ),
+                        ),
+                      ),
+                      Column(
+                        children: selections.map((item) => Container(
+                          padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 12),
+                          margin: const EdgeInsets.symmetric(vertical: 4),
+                          decoration: BoxDecoration(
+                            color:  Colors.deepPurple.shade100,
+                            borderRadius: BorderRadius.circular(8),
+                          ),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text(item, style: TextStyle(fontSize: 16,
+                              color:  Colors.deepPurple.shade800,
+
+                               )),
+                              CupertinoButton(
+                                padding: EdgeInsets.zero,
+                                onPressed: () => removeChoice(selections.indexOf(item)),
+                                child: const Icon(CupertinoIcons.trash, size: 20, color: CupertinoColors.systemRed),
+                              ),
+                            ],
+                          ),
+                        )).toList(),
+                      )
+                    ]
+                    else
+                      Column(
+                        children: history.map((item) => Padding(
+                          padding: const EdgeInsets.symmetric(vertical: 4),
+                          child: Text(item, style: TextStyle(fontSize: 16, 
+                          color:  Colors.deepPurple.shade800,)
+                          ),
+                        )).toList(),
+                      ),
             ],
           ),
               ),
