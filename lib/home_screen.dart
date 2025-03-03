@@ -1,15 +1,16 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'dart:math';
+import 'spinner_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
 
   @override
-  State<HomeScreen> createState() => _HomeScreenState();
+  _HomeScreenState createState() => _HomeScreenState();
 }
 
-class _HomeScreenState extends State<HomeScreen> {
+class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateMixin {
   late AnimationController _controller;
   double _angle = 0;
 
@@ -28,20 +29,31 @@ class _HomeScreenState extends State<HomeScreen> {
       _angle += (Random().nextDouble() * 5 + 5) * pi;
     });
     _controller.forward(from: 0).then((_) {
-      // Navigator.push(
-      //   context,
-        //CupertinoPageRoute(builder: (context) => second page()),
-      // );
+      Navigator.push(
+        context,
+        CupertinoPageRoute(builder: (context) => const SpinnerScreen()),
+      );
     });
   }
-  @override
-  Widget build(BuildContext context) {
-      return CupertinoPageScaffold(
+
+@override
+Widget build(BuildContext context) {
+  final Brightness brightness = MediaQuery.of(context).platformBrightness;
+  final bool isDarkMode = brightness == Brightness.dark;
+
+  return CupertinoPageScaffold(
     child: Stack(
       children: [
+        // Background
         Container(
           decoration: BoxDecoration(
-           color: Colors.black
+            gradient: LinearGradient(
+              colors: isDarkMode
+                  ? [Colors.black, Colors.deepPurple.shade900]
+                  : [Colors.deepPurple.shade100, Colors.white],
+              begin: Alignment.topCenter,
+              end: Alignment.bottomCenter,
+            ),
           ),
           child: SafeArea(
             child: SingleChildScrollView(
@@ -55,7 +67,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     style: TextStyle(
                       fontSize: 30,
                       fontWeight: FontWeight.bold,
-                      color:  CupertinoColors.white,
+                      color: isDarkMode ? CupertinoColors.white : Colors.deepPurple.shade800,
                     ),
                     textAlign: TextAlign.center,
                   ),
@@ -66,7 +78,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       "Not sure what to choose? Let Spinner decide for you!",
                       style: TextStyle(
                         fontSize: 18,
-                        color:  CupertinoColors.systemGrey4,
+                        color: isDarkMode ? CupertinoColors.systemGrey4 : Colors.deepPurple.shade700,
                       ),
                       textAlign: TextAlign.center,
                     ),
@@ -87,7 +99,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     style: TextStyle(
                       fontSize: 18,
                       fontWeight: FontWeight.w500,
-                      color: CupertinoColors.systemGrey4,
+                      color: isDarkMode ? CupertinoColors.systemGrey4 : Colors.deepPurple.shade700,
                     ),
                     textAlign: TextAlign.center,
                   ),
@@ -99,7 +111,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       style: TextStyle(
                         fontSize: 16,
                         fontWeight: FontWeight.w500,
-                        color: CupertinoColors.systemGrey3 ,
+                        color: isDarkMode ? CupertinoColors.systemGrey3 : Colors.deepPurple.shade600,
                       ),
                       textAlign: TextAlign.center,
                     ),
@@ -110,7 +122,7 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
           ),
         ),
-       Positioned(
+        Positioned(
           top: 20, 
           right: 20, 
           child: GestureDetector(
@@ -118,7 +130,7 @@ class _HomeScreenState extends State<HomeScreen> {
             child: Container(
               padding: const EdgeInsets.all(8),
               decoration: BoxDecoration(
-                color: Colors.white.withOpacity(0.8), 
+                color: isDarkMode ? Colors.black54 : Colors.white.withOpacity(0.8), // Adjust color
                 shape: BoxShape.circle,
                 boxShadow: [
                   BoxShadow(
@@ -130,8 +142,8 @@ class _HomeScreenState extends State<HomeScreen> {
               ),
               child: Icon(
                 CupertinoIcons.info_circle_fill,
-                color:  Colors.white,
-                size: 20,
+                color: isDarkMode ? Colors.white : Colors.deepPurple,
+                size: 28,
               ),
             ),
           ),
@@ -140,7 +152,8 @@ class _HomeScreenState extends State<HomeScreen> {
     ),
   );
 }
-void _showInfoDialog(BuildContext context) {
+
+  void _showInfoDialog(BuildContext context) {
     showCupertinoModalPopup(
       context: context,
       builder: (context) => CupertinoPopupSurface(
@@ -198,9 +211,9 @@ void _showInfoDialog(BuildContext context) {
       ),
     );
   }
-   @override
+  @override
   void dispose() {
     _controller.dispose();
     super.dispose();
   }
-  }
+}
