@@ -1,5 +1,8 @@
+import 'dart:async';
+import 'dart:math';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_fortune_wheel/flutter_fortune_wheel.dart';
 
 class SpinnerScreen extends StatefulWidget {
   const SpinnerScreen({super.key});
@@ -9,6 +12,93 @@ class SpinnerScreen extends StatefulWidget {
 }
 
 class _SpinnerScreenState extends State<SpinnerScreen> {
+   final TextEditingController _inputController = TextEditingController();
+  List<String> selections = [];
+  List<String> history = [];
+  final StreamController<int> selected = StreamController<int>();
+  bool showEntries = true;
+  int spinDuration = 2;
+  final List<Color> rainbowColors = [
+    Colors.red, Colors.orange, Colors.yellow, Colors.green,
+    Colors.blue, Colors.indigo, Colors.purple
+  ];
+
+  @override
+  void initState() {
+    super.initState();
+    selections = ["Item 1", "Item 2","Item 3", "Item 4", "Item 5","Item 6"];
+  }
+
+  void spinWheel() {
+    if (selections.isEmpty) return;
+    final randomIndex = Random().nextInt(selections.length);
+    selected.add(randomIndex);
+
+    Future.delayed(Duration(seconds: spinDuration), () {
+      showResultDialog(selections[randomIndex], randomIndex);
+    });
+  }
+
+  void showResultDialog(String result, int index) {
+    setState(() {
+      history.add(result);
+    });
+
+    showCupertinoDialog(
+      context: context,
+      builder: (context) => CupertinoAlertDialog(
+        title: Text(" $result"),
+        content: const Text("result"),
+        actions: [
+          CupertinoDialogAction(
+            child: const Text("OK"),
+            onPressed: () {
+              Navigator.pop(context);
+              removeChoice(index);
+            },
+          ),
+        ],
+      ),
+    );
+  }
+
+  void addChoice() {
+    String inputText = _inputController.text.trim();
+    if (inputText.isNotEmpty) {
+      setState(() {
+        if (selections.length < 2) {
+          selections.add(inputText);
+        } else if (selections.contains("Item 1")) {
+          selections[selections.indexOf("Item 1")] = inputText;
+        } else if (selections.contains("Item 2")) {
+          selections[selections.indexOf("Item 2")] = inputText; 
+          } else if (selections.contains("Item 3")) {
+          selections[selections.indexOf("Item 3")] = inputText;
+        }  else if (selections.contains("Item 4")) {
+          selections[selections.indexOf("Item 4")] = inputText; 
+          } else if (selections.contains("Item 5")) {
+          selections[selections.indexOf("Item 5")] = inputText;
+          }else if (selections.contains("Item 6")) {
+          selections[selections.indexOf("Item 6")] = inputText;
+        
+        }else {
+          selections.add(inputText);
+        }
+        _inputController.clear();
+      });
+    }
+  }
+
+  void removeChoice(int index) {
+    setState(() {
+      selections.removeAt(index);
+      if (selections.length < 2) {
+        selections.addAll(["item 1", "item 2"]);
+      }
+    });
+  }
+
+  
  @override
 Widget build(BuildContext context) {
 
@@ -44,6 +134,74 @@ Widget build(BuildContext context) {
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               const SizedBox(height: 20),
+              GestureDetector(
+                onTap: spinWheel,
+                child: Stack(
+                  alignment: Alignment.center,
+                  children: [
+                    Container(
+                      width: 320,
+                      height: 320,
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        color: Colors.red.shade700,
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.white.withOpacity(0.2),
+                            blurRadius: 15,
+                            spreadRadius: 5,
+                          ),
+                        ],
+                        border: Border.all(color: Colors.black, width: 10), 
+                      ),
+                    ),
+
+                    SizedBox(
+                      width: 280,
+                      height: 280,
+                      child: FortuneWheel(
+                        selected: selected.stream,
+                        duration: Duration(seconds: spinDuration),
+                        items: selections.asMap().entries.map((entry) {
+                          int index = entry.key;
+                          String choice = entry.value;
+                          return FortuneItem(
+                            child: Transform.rotate(
+                              angle: -((index * (6.28 / selections.length))), 
+                              child: Text(
+                                choice,
+                                style: TextStyle(color: Colors.white, fontSize: 18),
+                              ),
+                            ),
+                            style: FortuneItemStyle(
+                              color: rainbowColors[index % rainbowColors.length],
+                              borderColor: Colors.black,
+                              borderWidth: 2, 
+                            ),
+                          );
+                        }).toList(),
+                      ),
+                    ),
+
+                    Container(
+                      width: 60,
+                      height: 60,
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        gradient: LinearGradient(
+                          colors: [Colors.white, Colors.grey.shade300],
+                          begin: Alignment.topLeft,
+                          end: Alignment.bottomRight,
+                        ),
+                        border: Border.all(color: Colors.orange, width: 3),
+                        boxShadow: [BoxShadow(color: Colors.black38, blurRadius: 8)],
+                      ),
+                    ),
+
+                  
+                ],
+              ),
+            ),
               Row(
                 children: [
                   Expanded(
@@ -188,4 +346,10 @@ Widget build(BuildContext context) {
     ),
   );
 }
+
+  @override
+  void dispose() {
+    selected.close();
+    super.dispose();
+  }
 }
