@@ -21,13 +21,13 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
       vsync: this,
       duration: const Duration(seconds: 3),
     );
-    _spinWheel(); 
   }
 
   void _spinWheel() {
     setState(() {
       _angle += (Random().nextDouble() * 5 + 5) * pi;
     });
+
     _controller.forward(from: 0).then((_) {
       Navigator.push(
         context,
@@ -153,16 +153,22 @@ Widget build(BuildContext context) {
   );
 }
 
-  void _showInfoDialog(BuildContext context) {
-    showCupertinoModalPopup(
-      context: context,
-      builder: (context) => CupertinoPopupSurface(
+void _showInfoDialog(BuildContext context) {
+  showCupertinoDialog(
+    context: context,
+    builder: (context) => Center( 
+      child: CupertinoPopupSurface(
         child: Container(
+          width: MediaQuery.of(context).size.width * 0.85,  
           height: 450,
           padding: const EdgeInsets.all(20),
           child: Column(
+            mainAxisSize: MainAxisSize.min, 
             children: [
-              const Text("Meet the Team", style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold)),
+              const Text(
+                "Meet the Team", 
+                style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
+              ),
               const SizedBox(height: 10),
               Expanded(
                 child: SingleChildScrollView(
@@ -178,16 +184,22 @@ Widget build(BuildContext context) {
                   ),
                 ),
               ),
+              const SizedBox(height: 10),
               CupertinoButton(
-                child: const Text("Close", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18)),
+                child: const Text(
+                  "Close", 
+                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
+                ),
                 onPressed: () => Navigator.pop(context),
               ),
             ],
           ),
         ),
       ),
-    );
-  }
+    ),
+  );
+}
+
 
   Widget _buildMemberTile(String name, String imagePath, String role) {
     return Padding(
