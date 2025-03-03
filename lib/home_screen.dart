@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'dart:math';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -9,6 +10,30 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+  late AnimationController _controller;
+  double _angle = 0;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = AnimationController(
+      vsync: this,
+      duration: const Duration(seconds: 3),
+    );
+    _spinWheel(); 
+  }
+
+  void _spinWheel() {
+    setState(() {
+      _angle += (Random().nextDouble() * 5 + 5) * pi;
+    });
+    _controller.forward(from: 0).then((_) {
+      // Navigator.push(
+      //   context,
+        //CupertinoPageRoute(builder: (context) => second page()),
+      // );
+    });
+  }
   @override
   Widget build(BuildContext context) {
       return CupertinoPageScaffold(
@@ -47,7 +72,15 @@ class _HomeScreenState extends State<HomeScreen> {
                     ),
                   ),
                   const SizedBox(height: 40),
-                  
+                  GestureDetector(
+                    onTap: _spinWheel,
+                    child: AnimatedRotation(
+                      turns: _angle / (2 * pi),
+                      duration: const Duration(seconds: 3),
+                      curve: Curves.easeOut,
+                      child: Image.asset('images/wheel.png', width: 250, height: 250),
+                    ),
+                  ),
                   const SizedBox(height: 15),
                   Text(
                     "Click the wheel to start!",
@@ -164,5 +197,10 @@ void _showInfoDialog(BuildContext context) {
         ],
       ),
     );
+  }
+   @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
   }
   }
