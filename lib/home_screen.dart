@@ -77,9 +77,92 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
           ),
         ),
-       
+       Positioned(
+          top: 20, 
+          right: 20, 
+          child: GestureDetector(
+            onTap: () => _showInfoDialog(context),
+            child: Container(
+              padding: const EdgeInsets.all(8),
+              decoration: BoxDecoration(
+                color: Colors.white.withOpacity(0.8), 
+                shape: BoxShape.circle,
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withOpacity(0.1),
+                    blurRadius: 5,
+                    spreadRadius: 2,
+                  ),
+                ],
+              ),
+              child: Icon(
+                CupertinoIcons.info_circle_fill,
+                color:  Colors.white,
+                size: 20,
+              ),
+            ),
+          ),
+        ),
       ],
     ),
   );
 }
+void _showInfoDialog(BuildContext context) {
+    showCupertinoModalPopup(
+      context: context,
+      builder: (context) => CupertinoPopupSurface(
+        child: Container(
+          height: 450,
+          padding: const EdgeInsets.all(20),
+          child: Column(
+            children: [
+              const Text("Meet the Team", style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold)),
+              const SizedBox(height: 10),
+              Expanded(
+                child: SingleChildScrollView(
+                  child: Column(
+                    children: [
+                      _buildMemberTile("Beyonce Ama", "images/1.jpg", "Lead Developer"),
+                      _buildMemberTile("Jolas Arpon", "images/2.jpg", "Developer"),
+                      _buildMemberTile("Monica Carreon", "images/3.jpg", "Developer"),
+                      _buildMemberTile("Romel Gamboa", "images/4.jpg", "Developer"),
+                      _buildMemberTile("Kayle Cedric Larin", "images/5.jpg", "Developer"),
+                      _buildMemberTile("Rachelle Anne Macalino", "images/6.jpg", "Developer"),
+                    ],
+                  ),
+                ),
+              ),
+              CupertinoButton(
+                child: const Text("Close", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18)),
+                onPressed: () => Navigator.pop(context),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildMemberTile(String name, String imagePath, String role) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 10.0),
+      child: Row(
+        children: [
+          CircleAvatar(
+            radius: 35,
+            backgroundColor: Colors.indigo.shade200,
+            backgroundImage: AssetImage(imagePath),
+          ),
+          const SizedBox(width: 15),
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(name, style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w600)),
+              Text(role, style: const TextStyle(fontSize: 14, color: CupertinoColors.systemGrey)),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
   }
