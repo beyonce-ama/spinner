@@ -104,7 +104,7 @@ Widget build(BuildContext context) {
 
   return CupertinoPageScaffold(
    navigationBar: CupertinoNavigationBar(
-  backgroundColor:  Colors.black,
+  backgroundColor: Colors.deepPurple.shade100,
   middle: Text(
     "Spinner", 
     style: TextStyle(
@@ -113,13 +113,32 @@ Widget build(BuildContext context) {
   ),
   trailing: CupertinoButton(
     padding: EdgeInsets.zero, 
-    onPressed: () {  },
     child: Icon(
       CupertinoIcons.info_circle_fill, 
       color: Colors.deepPurple, 
       size: 26, 
     ),
-    
+    onPressed: () {
+      showCupertinoDialog(
+        context: context,
+        builder: (context) => CupertinoAlertDialog(
+          title: const Text("How to Use"),
+          content: const Text(
+             "1. Tap the wheel to spin it.\n"
+            "2. Add choices using the 'Add Choice' button.\n"
+            "3. View history to see previous spins.\n"
+            "4. Customize your choices anytime!\n"
+            "5. Adjust spin duration using the slider.",
+          ),
+          actions: [
+            CupertinoDialogAction(
+              child: const Text("Got it!"),
+              onPressed: () => Navigator.pop(context),
+            ),
+          ],
+        ),
+      );
+    },
   ),
 ),
 
