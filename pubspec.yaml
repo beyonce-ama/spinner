@@ -70,14 +70,14 @@ flutter:
     - images/5.jpg
     - images/6.jpg
     - images/wheel.png
-    - images/spinner.png
+    - images/logo.png
   #   - images/a_dot_ham.jpeg
 flutter_icons:
   android: true
   ios: true
-  image_path: "images/spinner.png"
+  image_path: "images/logo.png"
   adaptive_icon_background: "#ffffff" 
-  adaptive_icon_foreground: "images/spinner.png"
+  adaptive_icon_foreground: "images/logo.png"
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/to/resolution-aware-images
 
