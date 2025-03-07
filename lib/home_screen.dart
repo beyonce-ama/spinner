@@ -178,7 +178,7 @@ void _showInfoDialog(BuildContext context) {
                     children: [
                       _buildMemberTile("Beyonce Ama", "images/ama.jpg", "Lead Developer"),
                       _buildMemberTile("Jolas Arpon", "images/arpon.jpg", "Developer"),
-                      _buildMemberTile("Monica Carreon", "images/3.jpg", "Developer"),
+                      _buildMemberTile("Monica Carreon", "images/carreon.jpg", "Developer"),
                       _buildMemberTile("Romel Gamboa", "images/gamboa.jpg", "Developer"),
                       _buildMemberTile("Kayle Cedric Larin", "images/5.jpg", "Developer"),
                       _buildMemberTile("Rachelle Anne Macalino", "images/6.jpg", "Developer"),
