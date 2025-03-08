@@ -93,7 +93,7 @@ class _SpinnerScreenState extends State<SpinnerScreen> {
     setState(() {
       selections.removeAt(index);
       if (selections.length < 2) {
-        selections.addAll(["item 1", "item 2"]);
+        selections.addAll(["item 1"]);
       }
     });
   }
